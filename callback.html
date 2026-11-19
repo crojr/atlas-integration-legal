@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Atlas Integration — Authorization Callback</title>
+<style>body{font-family:system-ui,Arial,sans-serif;max-width:760px;margin:60px auto;padding:0 20px;line-height:1.6}code{background:#f2f2f2;padding:2px 6px;border-radius:4px;word-break:break-all}pre{background:#f7f7f7;padding:14px;border-radius:6px;overflow:auto;font-size:.85em}</style>
+</head>
+<body>
+<h1>Authorization Callback</h1>
+<p id="msg">Reading authorization parameters…</p>
+<pre id="out"></pre>
+<p>This page is only an OAuth redirect endpoint for the private integration <strong>Atlas Capema Integration</strong>. No data is stored here.</p>
+<script>
+(function () {
+  var q = new URLSearchParams(window.location.search);
+  var code = q.get("code"), realm = q.get("realmId"), state = q.get("state"), err = q.get("error");
+  var out = document.getElementById("out");
+  var msg = document.getElementById("msg");
+  var data = {code: code, realmId: realm, state: state, error: err};
+  out.textContent = JSON.stringify(data, null, 2);
+  msg.textContent = err ? "Authorization was not granted: " + err
+                        : (code ? "Authorization code received." : "No authorization code in the URL.");
+  // Repassa para quem abriu, caso o fluxo seja automatizado.
+  if (window.opener) { try { window.opener.postMessage(data, "*"); } catch (e) {} }
+})();
+</script>
+</body>
+</html>
